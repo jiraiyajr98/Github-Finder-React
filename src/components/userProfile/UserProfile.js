@@ -1,46 +1,31 @@
 import React, { Component } from 'react'
 import { Container,Card,Row,Col,Image,Button,Badge } from 'react-bootstrap'
+import { Repository } from '../repository/Repository';
 
 export default class UserProfile extends Component {
 
     componentDidMount(){
         this.props.getUserdetails(this.props.match.params.username);
+        this.props.getUserRepo(this.props.match.params.username);
     }
 
     render() {
 
         const {         
             login,
-            id,
-            node_id,
             avatar_url,
-            gravatar_id,
-            url,
             html_url,
-            followers_url,
-            following_url,
-            gists_url,
-            starred_url,
-            subscriptions_url,
-            organizations_url,
-            repos_url,
-            events_url,
-            received_events_url,
-            type,
-            site_admin,
             name,
             company,
             blog,
             location,
-            email,
-            hireable,
             bio,
             public_repos,
             public_gists,
             followers,
             following,
-            created_at,
-            updated_at } =  this.props.user;
+            } =  this.props.user;
+
 
             const paddingTopStyle = {
                 paddingTop:'15px'
@@ -114,6 +99,9 @@ export default class UserProfile extends Component {
                   </Row>
                 </Card>
               </Card.Body>
+
+              <Repository repositories={this.props.userRepo}/>
+
             </Card>
           </Container>
         );

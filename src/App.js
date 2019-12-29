@@ -18,7 +18,8 @@ class App extends Component {
     users: [],
     loading : false,
     showAlertComponent : null,
-    user:{}
+    user:{},
+    usersArray:[]
 
   }
 
@@ -51,6 +52,15 @@ class App extends Component {
     //console.log(response.data);
     this.setState({user:response.data});
 
+  }
+
+  getUserRepo = async (username) =>{
+
+    const response = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc`);
+    console.log(this.state.usersArray)
+    this.setState({usersArray:response.data});
+    console.log(this.state.usersArray)
+    
   }
 
   showAlert = () =>{
@@ -88,7 +98,9 @@ class App extends Component {
 
        <Route exact path='/user/:username' render={props =>(
 
-         <UserProfile {...props} getUserdetails={this.getUserdetails} user={this.state.user}/>
+        <UserProfile {...props} getUserdetails={this.getUserdetails} user={this.state.user} 
+         
+        getUserRepo={this.getUserRepo} userRepo={this.state.usersArray}/>
 
        )} />
 
