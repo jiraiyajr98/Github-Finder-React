@@ -1,15 +1,15 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import { Container,Card,Row,Col,Image,Button,Badge } from 'react-bootstrap'
 import { Repository } from '../repository/Repository';
 
-export default class UserProfile extends Component {
+const UserProfile = ( { match,user,userRepo,getUserdetails,getUserRepo} ) => {
 
-    componentDidMount(){
-        this.props.getUserdetails(this.props.match.params.username);
-        this.props.getUserRepo(this.props.match.params.username);
-    }
+  useEffect(()=>{
 
-    render() {
+    getUserdetails(match.params.username);
+    getUserRepo(match.params.username);
+    // eslint-disable-next-line
+  },[]);
 
         const {         
             login,
@@ -24,16 +24,7 @@ export default class UserProfile extends Component {
             public_gists,
             followers,
             following,
-            } =  this.props.user;
-
-
-            const paddingTopStyle = {
-                paddingTop:'15px'
-            }
-
-            const marginAll = {
-                margin:'10px'
-            }
+            } =  user;
 
         // console.log("User Profile "+this.props.user);
 
@@ -84,7 +75,7 @@ export default class UserProfile extends Component {
                     </Col>
                     <Col md="auto">
                       <Button
-                        variant="warning"  style={{color:'white', margin:'5px'}}
+                        variant="warning"  style={{color:'white', margin:'10px'}}
                       >
                         Public Repository{" "}
                         <Badge variant="light">{public_repos}</Badge>
@@ -100,10 +91,20 @@ export default class UserProfile extends Component {
                 </Card>
               </Card.Body>
 
-              <Repository repositories={this.props.userRepo}/>
+              <Repository repositories={userRepo}/>
 
             </Card>
           </Container>
         );
-    }
+    
 }
+
+const paddingTopStyle = {
+  paddingTop:'15px'
+}
+
+const marginAll = {
+  margin:'10px'
+}
+
+export default UserProfile;

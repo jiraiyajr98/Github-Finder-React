@@ -1,48 +1,46 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { Form,FormControl,Button,Container } from 'react-bootstrap'
 
-export default class SearchBar extends Component {
+const SearchBar = ({ showAlert,searchUser }) => {
 
-    state={
-        text:''
-    }
+    const [ text, setText] = useState('');
 
-    onChange = (e) =>{
+    const onChange = (e) =>{
 
-        this.setState({[e.target.name]: e.target.value});
+        setText(e.target.value);
 
     }
 
-    onSearch = (e) =>{
+    const onSearch = (e) =>{
         e.preventDefault();
 
-        if(this.state.text === '')
+        if(text === '')
         {
-            this.props.showAlert();
+            showAlert();
         }
         else
         {
-            this.props.searchUser(this.state.text);
-            this.setState({text: ''});
+            searchUser(text);
+            setText('');
         }
     }
 
-    render() {
-
-        const marginAll = {
-            margin:'10px'
-          }
-
         return (
             <Container >
-                <Form onSubmit={this.onSearch} style={marginAll} >
-                    <FormControl type="text" placeholder="Search"  value={this.state.text}
+                <Form onSubmit={onSearch} style={marginAll} >
+                    <FormControl type="text" placeholder="Search"  value={text}
                      name = "text"
-                     onChange={this.onChange}/>
+                     onChange={onChange}/>
                     <Button  variant="info" type="submit" className=" w-100"  style={{marginTop:'10px'}}>Submit</Button>
                 </Form>
             </Container >
         )
-    }
+
 }
+
+const marginAll = {
+    margin:'10px'
+  };
+
+  export default SearchBar;
 

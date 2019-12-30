@@ -1,4 +1,4 @@
-import React ,{Component, Fragment} from 'react';
+import React ,{ Fragment, useState, useEffect } from 'react';
 import  { Route , Switch } from 'react-router-dom'
 import './App.css';
 import NavBar from './components/navbar/NavBar';
@@ -10,86 +10,83 @@ import About from './components/about/About';
 import UserProfile from './components/userProfile/UserProfile'
 
 
+const App = () => {
 
-class App extends Component {
+  const [ users, setUsers ] = useState([]);
+  const [ loading, setLoading ] = useState(false);
+  const [ showAlertComponent, setShowAlertComponent ] = useState(null);
+  const [ user, setUser ] = useState({});
+  const [ usersArray, setUsersArray ] = useState([]);
 
-  state = {
+  useEffect(  ()=>{
 
-    users: [],
-    loading : false,
-    showAlertComponent : null,
-    user:{},
-    usersArray:[]
+    async function fetchData() {
 
-  }
+      setLoading(true);
+      
+      const response = await axios.get('https://api.github.com/users');
 
-  async componentDidMount(){
-
-    this.setState({ loading:true });
-
-    const response = await axios.get('https://api.github.com/users');
-
-    this.setState({ loading:false, users:response.data });
-
-  }
-
-  searchUser = async (text) =>{
-
-    console.log(text);
+      setUsers(response.data);
     
+      setLoading(false);
+      
+    }
+    fetchData();
 
-    this.setState({ loading:true });
+   
+    // eslint-disable-next-line
+  },[]);
+
+  const searchUser = async (text) =>{
+
+  
+    setLoading(true);
 
     const response = await axios.get(`https://api.github.com/search/users?q=${text}`);
 
-    this.setState({ loading:false, users:response.data.items });
+    setUsers(response.data.items);
+
+    
+    setLoading(false);
 
   }
 
-  getUserdetails = async (username) => {
+  const getUserdetails = async (username) => {
     
     const response = await axios.get(`https://api.github.com/users/${username}`);
-    //console.log(response.data);
-    this.setState({user:response.data});
+    
+    setUser(response.data);
 
   }
 
-  getUserRepo = async (username) =>{
+  const getUserRepo = async (username) =>{
 
     const response = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc`);
-    console.log(this.state.usersArray)
-    this.setState({usersArray:response.data});
-    console.log(this.state.usersArray)
+
+    setUsersArray(response.data);
     
   }
 
-  showAlert = () =>{
+  const showAlert = () =>{
 
     this.setState({ showAlertComponent: true });
 
-    setTimeout(()=>this.setState({ showAlertComponent: null }),2000);
+    setTimeout(()=>setShowAlertComponent(null),2000);
 
   }
   
-
-  render(){
-
-    const marginAll = {
-      margin:'10px'
-    }
-
     return (
       
       <div className="App">
        <NavBar />
-       <AlertComponent style={marginAll} alert={this.state.showAlertComponent}/> 
+       <AlertComponent style={marginAll} alert={showAlertComponent}/> 
        <Switch>
        
        <Route exact path="/" render={props=>(
          <Fragment>
       
-           <SearchBar  searchUser = {this.searchUser} showAlert = {this.showAlert}/>
-           <Users loading={this.state.loading} users={this.state.users}/>
+           <SearchBar  searchUser = {searchUser} showAlert = {showAlert}/>
+           <Users loading={loading} users={users}/>
          
          </Fragment>
        )} />
@@ -98,9 +95,9 @@ class App extends Component {
 
        <Route exact path='/user/:username' render={props =>(
 
-        <UserProfile {...props} getUserdetails={this.getUserdetails} user={this.state.user} 
+        <UserProfile {...props} getUserdetails={getUserdetails} user={user} 
          
-        getUserRepo={this.getUserRepo} userRepo={this.state.usersArray}/>
+        getUserRepo={getUserRepo} userRepo={usersArray}/>
 
        )} />
 
@@ -108,8 +105,13 @@ class App extends Component {
       </div>
       
     );
-  }
+  
 
 }
+
+const marginAll = {
+  margin:'10px'
+};
+
 
 export default App;
