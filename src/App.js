@@ -8,6 +8,9 @@ import SearchBar from './components/searchBar/SearchBar'
 import AlertComponent from './components/alert/AlertComponent';
 import About from './components/about/About';
 import UserProfile from './components/userProfile/UserProfile'
+import { useDispatch } from 'react-redux'
+import { setUsersAction } from './actions/UsersAction'
+
 
 
 const App = () => {
@@ -18,6 +21,9 @@ const App = () => {
   const [ user, setUser ] = useState({});
   const [ usersArray, setUsersArray ] = useState([]);
 
+  //const usersList = useSelector(state => state.UsersReducer);
+  const dispatch = useDispatch();
+
   useEffect(  ()=>{
 
     async function fetchData() {
@@ -25,6 +31,8 @@ const App = () => {
       setLoading(true);
       
       const response = await axios.get('https://api.github.com/users');
+
+      dispatch(setUsersAction(response.data));
 
       setUsers(response.data);
     
